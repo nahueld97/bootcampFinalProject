@@ -1,0 +1,14 @@
+1. Launch Google Chrome.
+2. Open URL - http://www.google.com
+3. Enter the keyword "auto" in the search bar
+4. Wait for the Ajax suggestion box to appear
+5. Get/store all the options of a suggestion box in a List<WebElement>
+6. Print all the suggestions one by one.
+7. Clear the input of the search bar
+8. Now enter the keyword “automation” in the search bar
+9. Wait for the Ajax suggestion box to appear
+10. Get/store all the options of a suggestion box in a List<WebElement>
+11. Print all the suggestions one by one.
+12. Check that there is no coincidence between both lists of suggestions
+13. Click on the first suggestion that has an image
+14. Check that the first obtained result is a page from store.steampowered.com
