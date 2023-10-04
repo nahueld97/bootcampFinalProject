@@ -68,9 +68,12 @@ public class GoogleSearchBar {
 		
 		Assert.assertFalse(coincident, "The results list are coincidents");
 		
-		for (WebElement webElement : suggestionsAutomation) {
-			
-		}
+		resultsElement.findElements(By.className("sbct sbre")).get(0).click();
+
+		wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[5]/div/div[12]/div[1]/div[2]/div[2]/div/div/div/div/div/div/div/div/div[1]/div/div/div[1]/div/div[3]/div[1]/div/div/div/div/div/div[1]/div/div/span/a/div/div/div/cite")));
+		WebElement pageResult = driver.findElement(By.xpath("/html/body/div[5]/div/div[12]/div[1]/div[2]/div[2]/div/div/div/div/div/div/div/div/div[1]/div/div/div[1]/div/div[3]/div[1]/div/div/div/div/div/div[1]/div/div/span/a/div/div/div/cite"));
+
+		Assert.assertTrue(pageResult.getText().contains("store.steampowered.com"),"La pagina no es \"store.steampowered.com\"");
 	}
 
 	@BeforeTest
