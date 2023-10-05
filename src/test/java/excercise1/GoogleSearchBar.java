@@ -33,6 +33,7 @@ public class GoogleSearchBar {
 	final private By imageSuggestionLocator = By.className("sbre");
 	final private By linkTextLocator = By.cssSelector("[role=\"text\"]");
 	final private By searchResultLocator = By.id("search");
+	final private By clickableSuggestion = By.cssSelector("[jsaction=\"click:.CLIENT;mouseover:.CLIENT\"]");
 
 	@Test
 	public void test() {
@@ -66,12 +67,8 @@ public class GoogleSearchBar {
 		
 		//wait the sugestion box to change or appear
 		wait.until(ExpectedConditions.visibilityOfElementLocated(resultsListLocator));
-		
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(clickableSuggestion));
+
 		
 		//get/store all the options of a suggestion box
 		resultsElement = driver.findElements(resultsListLocator).get(0);
@@ -115,5 +112,10 @@ public class GoogleSearchBar {
 		driver = new ChromeDriver();
 		driver.manage().window().maximize();
 		driver.get(url);
+	}
+	
+	@AfterTest
+	public void close() {
+		driver.close();
 	}
 }
