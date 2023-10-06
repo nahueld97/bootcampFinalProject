@@ -9,6 +9,8 @@ import pom.DemoBlazeCartPage;
 import pom.DemoBlazePage;
 import pom.DemoBlazeProductPage;
 import io.cucumber.java.en.Then;
+import io.cucumber.java.After;
+import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 
 public class buyProductSteps {
@@ -18,11 +20,15 @@ public class buyProductSteps {
 	private DemoBlazeCartPage cartPage;
 	private DemoBlazeProductPage productPage;
 	
-	@Given("The opened webpage = {string}")
-	public void openPageAndSetup(String string) {
+	@Before
+	public void setup() {
 		System.setProperty("webdriver.chrome.driver", "./src/test/resources/chromedriver/chromedriver.exe");
         driver = new ChromeDriver();
         driver.manage().window().maximize();
+	}
+	
+	@Given("The opened webpage = {string}")
+	public void openPageAndSetup(String string) {
         driver.get(string);
         homePage = new DemoBlazePage(driver);
         productPage = new DemoBlazeProductPage(driver);
@@ -54,7 +60,13 @@ public class buyProductSteps {
 		cartPage.clickOnPurchase();
 	}
 	
-	@Then ("A successfull message should be showed")
-    @And ("The correct information must be showed")
-	public void empty() {}
+	@Then ("A successfull message should be showed and the correct information must be showed")
+	public void check() {
+		cartPage.checkMessageInformation();
+	}
+	
+	@After
+	public void quit() {
+		driver.close();
+	}
 }

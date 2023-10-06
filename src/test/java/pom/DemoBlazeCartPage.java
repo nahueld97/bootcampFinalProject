@@ -1,7 +1,6 @@
 package pom;
 
 import java.time.Duration;
-import java.util.Arrays;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -28,6 +27,7 @@ public class DemoBlazeCartPage {
 	private By successfullMessageLocator = By.className("text-muted");
 	
 	private String formName,formCreditCard;
+	private String message;
 	
 	public DemoBlazeCartPage(WebDriver driver) {
 		this.driver = driver;
@@ -60,13 +60,18 @@ public class DemoBlazeCartPage {
 	}
 	
 	public void clickOnPurchase() {
+		wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("totalp")));
 		wait.until(ExpectedConditions.elementToBeClickable(purchaseBtnLocator));
 		driver.findElement(purchaseBtnLocator).click();
 		wait.until(ExpectedConditions.visibilityOfElementLocated(successfullMessageLocator));
-	
-		String message = driver.findElement(successfullMessageLocator).getText();
-		System.out.println(message);
-		//TODO check the data
+		wait.until(ExpectedConditions.elementToBeClickable(By.className("confirm")));
 		
+		message = driver.findElement(successfullMessageLocator).getText();
+		
+	}
+	
+	public void checkMessageInformation() {
+		Assert.assertTrue(message.contains("Card Number: "+formCreditCard));
+		Assert.assertTrue(message.contains("Name: "+formName));
 	}
 }

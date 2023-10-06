@@ -9,5 +9,4 @@ by placing the order.
     And Add second product to the cart
     And Go to the cart
     And Purchase the selected items
-    Then A successfull message should be showed
-    And The correct information must be showed
+    Then A successfull message should be showed and the correct information must be showed

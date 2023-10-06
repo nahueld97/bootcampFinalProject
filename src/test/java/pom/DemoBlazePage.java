@@ -18,7 +18,7 @@ public class DemoBlazePage {
 	private By phoneCategorieLocator = By.cssSelector("[onclick=\"byCat('phone')\"]");
 	private By notebookCategorieLocator = By.cssSelector("[onclick=\"byCat('notebook')\"]");
 	private By monitorCategorieLocator = By.cssSelector("[onclick=\"byCat('monitor')\"]");
-	private By ProductsLocator = By.id("tbodyid");
+	private By ProductLocator = By.xpath("//*[@id=\"tbodyid\"]/div[1]/div/a");
 	
 	public DemoBlazePage(WebDriver driver) {
 		this.driver = driver;
@@ -41,13 +41,8 @@ public class DemoBlazePage {
 	}
 	
 	public void clickFirstProduct() {
-		wait.until(ExpectedConditions.presenceOfElementLocated(ProductsLocator));
-		List<WebElement> productsList = driver.findElements(ProductsLocator);
-		wait.until(ExpectedConditions.presenceOfNestedElementLocatedBy(ProductsLocator,By.tagName("a")));
-		WebElement firstProduct = productsList.get(0).findElement(By.tagName("a"));
-		wait.until(ExpectedConditions.visibilityOf(firstProduct));
-		wait.until(ExpectedConditions.elementToBeClickable(firstProduct));
-		firstProduct.click();
+		wait.until(ExpectedConditions.presenceOfElementLocated(ProductLocator));
+		driver.findElement(ProductLocator).click();
 	}
 	
 	
