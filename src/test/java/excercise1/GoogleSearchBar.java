@@ -34,72 +34,67 @@ public class GoogleSearchBar {
 	@Test
 	public void test() {
 		wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+		List<String> autoStrings,automationStrings;
 		
-		//Launch Google Chrome
-		WebElement searchBarElement = driver.findElement(searchBarLocator);
+		List<WebElement> suggestionsList = getResultsFromText("auto");
+		autoStrings = printResults(suggestionsList);
+		clearSearchBar();
+		suggestionsList = getResultsFromText("automation");
+		automationStrings = printResults(suggestionsList);
+		Boolean coincident = equalLists(autoStrings, automationStrings);
 		
-		//Enter "auto" on the search bar
-		searchBarElement.sendKeys("auto");
+		Assert.assertFalse(coincident, "The results list are coincidents");
 		
-		//wait ajax suggestion box to appear
-		wait.until(ExpectedConditions.visibilityOfElementLocated(resultsListLocator));
+		clickFirstSuggestionWithImage();
+		Boolean isFrom = firstResultIsFromPage("store.steampowered.com");
 		
-		//get/store all the options of a suggestion box
-		WebElement resultsElement = driver.findElements(resultsListLocator).get(0);
-		List<WebElement> suggestionsList = resultsElement.findElements(resultOptionLocator);
-		
-		//print all the suggestions one by one
-		List<String> suggestionsAutoStrings = new LinkedList<String>();
-		for (WebElement webElement : suggestionsList) {
-			System.out.println("-"+webElement.getAttribute("aria-label"));
-			suggestionsAutoStrings.add(webElement.getAttribute("aria-label")); //save the labels for future comparison
-		}
-		
-		//clear the input of the searchBar
-		searchBarElement.clear();
-		
-		//Enter "automation" on the search bar
-		searchBarElement.sendKeys("automation");
-		
-		//wait the sugestion box to change or appear
+		Assert.assertTrue(isFrom,"La pagina no es \"store.steampowered.com\"");
+	}
+
+	public List<WebElement> getResultsFromText(String keywords){
+		driver.findElement(searchBarLocator).sendKeys(keywords);
 		wait.until(ExpectedConditions.visibilityOfElementLocated(resultsListLocator));
 		wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(clickableSuggestion));
-
-		
-		//get/store all the options of a suggestion box
-		resultsElement = driver.findElements(resultsListLocator).get(0);
-		suggestionsList = resultsElement.findElements(resultOptionLocator);
-		
-		//print all the suggestions one by one
-		List<String> suggestionsAutomationStrings = new LinkedList<String>();
-		for (WebElement webElement : suggestionsList) {
+		WebElement resultsElement = driver.findElements(resultsListLocator).get(0);
+		return resultsElement.findElements(resultOptionLocator);
+	}
+	
+	public void clearSearchBar() {
+		driver.findElement(searchBarLocator).clear();
+	}
+	
+	public List<String> printResults(List<WebElement> results){
+		List<String> suggestionsStrings = new LinkedList<String>();
+		for (WebElement webElement : results) {
 			System.out.println("-"+webElement.getAttribute("aria-label"));
-			suggestionsAutomationStrings.add(webElement.getAttribute("aria-label"));//save the labels for future comparison
+			suggestionsStrings.add(webElement.getAttribute("aria-label"));
 		}
-		
-		//check no coincidences between both list of suggestions
+		return suggestionsStrings;
+	}
+	
+	public Boolean equalLists(List<String> l1, List<String> l2){
 		Boolean coincident = true;
-		
 		String textAuto,textAutomation;
-		for (int i=0; i<suggestionsAutoStrings.size() && coincident ; i++) {
-			textAuto = suggestionsAutoStrings.get(i);
-			textAutomation = suggestionsAutomationStrings.get(i);
+		
+		for (int i=0; i<l1.size() && coincident ; i++) {
+			textAuto = l1.get(i);
+			textAutomation = l2.get(i);
 			coincident = (textAuto.equals(textAutomation));
 			if(!textAuto.equals(textAutomation)) {
 				System.out.println("{"+textAuto+"  "+textAutomation+"}");
 			}
 		}
-		
-		Assert.assertFalse(coincident, "The results list are coincidents");
-		
-		//click on first suggestion with image
-		resultsElement.findElements(imageSuggestionLocator).get(0).click();
-
-		//check that the first obtained result is a page from "store.steampowered.com"
+		return coincident;
+	}
+	
+	private Boolean firstResultIsFromPage(String pageUrl) {
 		wait.until(ExpectedConditions.visibilityOfElementLocated(searchResultLocator));
 		WebElement pageResult = driver.findElements(linkTextLocator).get(0);
-
-		Assert.assertTrue(pageResult.getText().contains("store.steampowered.com"),"La pagina no es \"store.steampowered.com\"");
+		return pageResult.getText().contains(pageUrl);
+	}
+	
+	private void clickFirstSuggestionWithImage() {
+		driver.findElements(resultsListLocator).get(0).findElements(imageSuggestionLocator).get(0).click();
 	}
 
 	@BeforeTest
